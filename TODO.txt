@@ -1,0 +1,1 @@
+- write board, game notation, 
