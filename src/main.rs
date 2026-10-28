@@ -1,7 +1,9 @@
 //! Terminal frontend for chess game.
 mod board;
+mod moves;
+mod pieces;
 
-use board::Board;
+use board::{Board, Color};
 
 use std::io::{self, Write};
 
@@ -17,19 +19,19 @@ fn prompt(message: &str) -> String {
 
 fn main() {
     println!("Welcome to my chess game!");
-    let board = Board::init();
+    let mut board = Board::init();
 
     // game loop
     loop {
-        let command = prompt("> ");
+        println!("{board}");
+        let dots = if board.side == Color::White { "." } else { "..." };
+        let command = prompt(&format!("{}{dots} ", board.fullmove));
 
         match command.as_str() {
-            "exit" => break,
-            "quit" => break,
+            "exit" | "quit" => break,
             "" => continue,
-            other => match board.get_sq(other) {
-                Ok(Some(p)) => println!("{p}"),
-                Ok(None) => println!("empty"),
+            other => match board.move_piece(other) {
+                Ok(()) => {},
                 Err(e) => println!("{e}"),
             },
         }
